@@ -8,32 +8,71 @@ const unsigned int WINDOW_XPOS = 400;
 const unsigned int WINDOW_YPOS = 200;
 const std::string WINDOW_TITLE = "SDL Demo";
 
-// Bool used to determine if the triangle should be drawn
-bool drawTriangle = true;
+// Bool used to determine if the triangles should be drawn
+bool drawPrimitives = true;
 
-float movingPoint = -1.0f;
 float centerVertexX = 0.0f;
 float bottomVertexX = 1.0f;
 float topVertexX = 0.0f;
+float movingPoint = -1.0f;
 float movingSpeed = 0.02f;
 
+// OpenGL culling mode - can be changed in-game by pressing B
 GLenum cullMode = GL_FRONT;
 
-// Function to display opengGL primitives, this is called from within main()
-void drawTriangles()
+/// <summary>
+/// Week 2 exercises.
+/// Draws a triangle in CLOCKWISE direction.
+/// </summary>
+void drawClockwiseTriangle()
 {
 	// Week 2 - Exercise 3.1:
-	// By default an object defined in counter clockwise direction has its front face facing forward
-	// A clockwise direction object has its back face facing forward, so it won't be visible if we cull the back
+	//
+	// By default an object defined in counter-clockwise direction has its
+	// front face facing forward.
+	//
+	// A clockwise direction object has its back face facing forward, so it
+	// won't be visible if we cull the back. Culling must be enabled before
+	// drawing.
+	//
+	// See drawMovingTriangle for a counter-clockwise triangle.
+	//
 	// glCullFace(GL_BACK);
+	// glEnable(GL_CULL_FACE);
+
 	// Week 2 - Exercise 3.2:
+	//
 	// glCullFace(GL_FRONT);
 	// glCullFace(GL_FRONT_AND_BACK)
 	// glEnable(GL_CULL_FACE);
 
-	// Week 3 - Exercise 1:
+	// Week 2 - Exercise 3.0 - Draw in clockwise direction
+	glBegin(GL_TRIANGLES);
+	glColor3f(1, 0, 0);
+	glVertex3f(0, -1, 0);
+
+	glColor3f(0, 1, 0);
+	glVertex3f(-1, 0, 0);
+
+	glColor3f(0, 0, 1);
+	glVertex3f(0, 0, 0);
+	glEnd();
+}
+
+/// <summary>
+/// Week 3 exercises.
+/// Draws a triangle in COUNTER-CLOCKWISE direction (default).
+/// </summary>
+void drawMovingTriangle()
+{
+	// Update values of vertex locations for movement
+
+	// Week 3 exercise 1
+	// If location of right vertex is at a boundary, invert it
 	if (movingPoint <= -1) movingPoint *= -1;
 	movingPoint -= movingSpeed;
+
+	// Week 3 - exercises 2 and 3
 	centerVertexX -= movingSpeed;
 	// if (bottomVertexX <= -1) bottomVertexX = 1;
 	bottomVertexX -= movingSpeed;
@@ -46,6 +85,8 @@ void drawTriangles()
 	}
 
 	// Clamp values before drawing (todo: do this better...)
+	// If vertex location is out of boundaries, set it to the nearest boundary
+	// (Can happen if movingSpeed is not a multiple of the min/max pos)
 	if (topVertexX < -1) topVertexX = -1;
 	if (centerVertexX < -1) centerVertexX = -1;
 	if (bottomVertexX < -1) bottomVertexX = -1;
@@ -54,32 +95,32 @@ void drawTriangles()
 	if (centerVertexX > 1) centerVertexX = 1;
 	if (bottomVertexX > 1) bottomVertexX = 1;
 
-	if (drawTriangle)		// Draw the triangle if required
+	// Draw triangle
+	// Begin defining triangle data points
+	glBegin(GL_TRIANGLES);
+	glColor3f(1, 0, 0);					// Define colour of first vertex
+	glVertex3f(centerVertexX, 0, 0);	// Define location of first vertex
+	glColor3f(0, 1, 0);					// Define colour of second vertex
+	glVertex3f(bottomVertexX, 0, 0);	// Define location of second vertex
+	// Move the right vertex in the Y axis
+	// (week 3 exercise 1 - vertex up and down exercise)
+	// glVertex3f(1, movingPoint, 0);
+	glColor3f(0, 0, 1);					// Define colour of third vertex
+	glVertex3f(topVertexX, 1, 0);		// Define location of third vertex
+	// Declare that data points have now finished
+	glEnd();
+}
+
+/// <summary>
+/// Calls our drawing functions.
+/// </summary>
+void drawTriangles()
+{
+	// Draw triangles if required
+	if (drawPrimitives)
 	{
-		glBegin(GL_TRIANGLES);				// Start to define a set of triangle data points
-		glColor3f(1, 0, 0);					// Define colour of first vertex
-		glVertex3f(centerVertexX, 0, 0);	// Define location of first vertex
-
-		glColor3f(0, 1, 0);					// Define colour of second vertex
-		glVertex3f(bottomVertexX, 0, 0);	// Define location of second vertex
-											// glVertex3f(1, movingPoint, 0);	// Move the vertex in the Y axis
-
-		glColor3f(0, 0, 1);				// Define colour of third vertex
-		glVertex3f(topVertexX, 1, 0);	// Define location of third vertex
-										// glVertex3f(0, movingPoint, 0);
-		glEnd();						// Declare that data points have now finished
-
-		// Week 2 - Exercise 3.0 - Clockwise direction
-		glBegin(GL_TRIANGLES);
-		glColor3f(1, 0, 0);
-		glVertex3f(0, -1, 0);
-
-		glColor3f(0, 1, 0);
-		glVertex3f(-1, 0, 0);
-
-		glColor3f(0, 0, 1);
-		glVertex3f(0, 0, 0);
-		glEnd();
+		drawMovingTriangle();
+		drawClockwiseTriangle();
 	}
 }
 
@@ -88,29 +129,36 @@ void drawTriangles()
 /// </summary>
 int main(int argc, char* args[])
 {
-	bool exit = false;  // Variable to control when to exit application
-	SDL_Event event;	// Create an event handler. This is used to react to any user events within the SDL window
+	// Bool used to control when to exit application
+	bool exit = false;
+	// SDL_event object used to handle user events within the SDL window.
+	SDL_Event event;
 
-	// Display() constructor here
 	SDLDemo::Display display(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
 
-	// Main game Loop START
-	while (!exit)	// Continue until the 'exit' variable has been changed to true
+	// Start game main loop
+	// Continue until the 'exit' variable has been changed to true
+	while (!exit)
 	{
-		while (SDL_PollEvent(&event) != 0)	// Check if there are any events to process
+		// Check for events and handle them if necessary
+		while (SDL_PollEvent(&event) != 0)
 		{
-			if (event.type == SDL_QUIT)		// If the current event is a quit (exit) action, change the 'exit' variable to true
+			if (event.type == SDL_QUIT)
 			{
+				// Exit main loop
 				exit = true;
 			}
-			else if (event.type == SDL_TEXTINPUT)	// If the current event is a text input event 
+			// Handle keyboard input events
+			else if (event.type == SDL_TEXTINPUT)
 			{
-				if (event.text.text[0] == 't')	// If use pressed the 't' key toggle draw state of the triangle
+				// If user pressed the 'T' key, toggle drawing of the triangles
+				if (event.text.text[0] == 't')
 				{
-					drawTriangle = !drawTriangle;
+					drawPrimitives = !drawPrimitives;
 				}
 
 				// Week 2 - Exercise 4
+				// Toggle face culling modes
 				if (event.text.text[0] == 'b')
 				{
 					switch (cullMode)
@@ -132,6 +180,7 @@ int main(int argc, char* args[])
 				}
 
 				// Week 2 - Exercise 5
+				// Display a simple message box in SDL
 				if (event.text.text[0] == 'p')
 				{
 					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Hey", "Hey I'm a message box.", NULL);
@@ -140,11 +189,10 @@ int main(int argc, char* args[])
 		}
 
 		display.clear();
-		// Execute the drawTriangles() function on each loop of the main game loop
 		drawTriangles();
 		display.update();
 	}
-	// Main game Loop END
+	// End game main loop
 
 	return 0;
 }
