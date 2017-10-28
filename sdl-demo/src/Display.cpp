@@ -2,7 +2,7 @@
 #include "GL/glew.h"
 #include <iostream>
 
-SDLDemos::Display::Display(int width, int height, const std::string& title)
+SDLDemo::Display::Display(const unsigned int WIDTH, const unsigned int HEIGHT, const std::string& TITLE)
 {
 	// SDL Initialisation
 
@@ -17,7 +17,7 @@ SDLDemos::Display::Display(int width, int height, const std::string& title)
 	else
 	{
 		// Create an SDL window
-		m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		m_window = SDL_CreateWindow(TITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 		if (m_window == NULL)
 		{
@@ -74,15 +74,19 @@ SDLDemos::Display::Display(int width, int height, const std::string& title)
 	SDL_StartTextInput();
 }
 
-SDLDemos::Display::~Display()
+SDLDemo::Display::~Display()
 {
+	SDL_StopTextInput();
+	SDL_DestroyWindow(m_window);
+	// Free up the memory used by the window
+	m_window = NULL;
 	SDL_Quit();
 }
 
-void SDLDemos::Display::update()
+void SDLDemo::Display::update()
 {
 }
 
-void SDLDemos::Display::clear()
+void SDLDemo::Display::clear()
 {
 }
