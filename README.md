@@ -4,4 +4,4 @@ OpenGL demos in C++ with SDL and GLUT
 
 **Author:** Alpeche Pancha
 
-**Version:** 0.0.1
+**Version:** 0.0.2
