@@ -27,6 +27,7 @@ SDLDemo::Display::Display(const unsigned int WIDTH, const unsigned int HEIGHT, c
 		{
 			// Create the context, this tells SDL which graphics library it is working with
 			m_glContext = SDL_GL_CreateContext(m_window);
+			// TODO do we need to call glewInit()?
 
 			if (m_glContext == NULL)
 			{
@@ -37,8 +38,6 @@ SDLDemo::Display::Display(const unsigned int WIDTH, const unsigned int HEIGHT, c
 			{
 				// Start of OpenGL initialization
 
-				// Create an error handler
-				GLenum error = GL_NO_ERROR;
 				// Make the Projection matrix active.
 				// The projection matrix defines the properties of the camera that views the objects in 3D space (zoom, aspect ratio etc)
 				glMatrixMode(GL_PROJECTION);
@@ -77,6 +76,7 @@ SDLDemo::Display::Display(const unsigned int WIDTH, const unsigned int HEIGHT, c
 SDLDemo::Display::~Display()
 {
 	SDL_StopTextInput();
+	SDL_GL_DeleteContext(m_glContext);
 	SDL_DestroyWindow(m_window);
 	// Free up the memory used by the window
 	m_window = NULL;
@@ -85,8 +85,15 @@ SDLDemo::Display::~Display()
 
 void SDLDemo::Display::update()
 {
+	// Refresh the window to show any changes made in the previous draw function
+	SDL_GL_SwapWindow(m_window);
 }
 
 void SDLDemo::Display::clear()
 {
+	// Week 2 - Exercise 1: set clear color to purple
+	// glClearColor(173.0, 0.0, 186.0, 0.0);
+	// Clear the colour buffer
+	// TODO use GL_DEPTH_BUFFER_BIT too
+	glClear(GL_COLOR_BUFFER_BIT);
 }
