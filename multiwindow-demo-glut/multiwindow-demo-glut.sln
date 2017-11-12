@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glut-demo", "glut-demo.vcxproj", "{20D8722A-B9C7-4B12-AC55-C8E04FE6E6D1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiwindow-demo-glut", "multiwindow-demo-glut.vcxproj", "{20D8722A-B9C7-4B12-AC55-C8E04FE6E6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
