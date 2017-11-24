@@ -120,8 +120,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MultipleShaders.cpp" />
     <ClCompile Include="ShaderFile.cpp" />
+    <ClCompile Include="ShaderLocal.cpp" />
     <ClCompile Include="TextFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +131,8 @@
   <ItemGroup>
     <None Include="FragmentShader.frag" />
     <None Include="VertexShader.vert" />
+    <None Include="Wk10-1 Fragment.frag" />
+    <None Include="Wk10-1 Vertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
