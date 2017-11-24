@@ -111,6 +111,16 @@ void shaders()
 
 	shaderLinkCheck(sID);	// Check for Linker errors
 
+
+	glGenBuffers(1, &vbo);				// Create a buffer object
+	glBindBuffer(GL_ARRAY_BUFFER, vbo); // Make the buffer object a vertex array
+	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);  //Set the size of the buffer, and insert the data
+	glGenVertexArrays(1, &vao);			// Generate a name for the vertex array
+	glBindVertexArray(vao);				// Bind the vertex arary object (also seemed to have mem impact)
+	glEnableVertexAttribArray(0);		// Now enable the vertex array
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); // Apply some properties to the vertices. Lookup this command in documentation for more details
+
+	glUseProgram(0);	//Unbind the shader program
 }
 
 void initGL() {
@@ -147,23 +157,6 @@ void display() {
 	glUseProgram(sID);	// Use shader program which has already been setup in main()
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);	// Use the first 3 vertices from position 0 to draw a triangle
-
-	////////////////////////////////////////////////////////////////////
-	// Note the increase in memory usage when this section of code is 
-	// placed in display(). Move this code to the bottom of shaders()
-	// and note the change in memory usage.
-	////////////////////////////////////////////////////////////////////
-	glGenBuffers(1, &vbo);				// Create a buffer object
-	glBindBuffer(GL_ARRAY_BUFFER, vbo); // Make the buffer object a vertex array
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);  //Set the size of the buffer, and insert the data
-	glGenVertexArrays(1, &vao);			// Generate a name for the vertex array
-	glBindVertexArray(vao);				// Bind the vertex arary object
-	glEnableVertexAttribArray(0);		// Now enable the vertex array
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); // Apply some properties to the vertices. Lookup this command in documentation for more details
-															  ////////////////////////////////////////////////////////////////////
-															  ////////////////////////////////////////////////////////////////////
-
-	glUseProgram(0);	//Unbind the shader program
 
 	glutSwapBuffers();
 	glutPostRedisplay();
