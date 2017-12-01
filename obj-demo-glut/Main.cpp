@@ -17,7 +17,7 @@ struct Vertex
 
 // TODO use number of points read as size?
 // Array of Vertex objects
-Vertex vertexlist[1024];
+Vertex vertexlist[8];
 
 void parseObj()
 {
@@ -52,13 +52,15 @@ void parseObj()
 			vertexlist[linesread].x = x;
 			vertexlist[linesread].y = y;
 			vertexlist[linesread].z = z;
-			std::cout << "Vertex stored" << std::endl;
+			std::cout << "Vertex stored: ";
+			std::cout << vertexlist[linesread].x << ", " << vertexlist[linesread].y << ", " << vertexlist[linesread].z << std::endl;
+			linesread++;
 		}
-		linesread++;
 	}
 }
 
 void initGL() {
+	// glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST); // Run a depth test to ensure triangles are drawn over each other in the correct order. Comment this line and look at the results.
@@ -69,35 +71,41 @@ void initGL() {
 void drawObj()
 {
 	unsigned int pointcount = 0;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Add perspective view
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(10.0, 1.0, 1.0, 10.5);
-	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+	gluPerspective(2.0, 1.0, 1.0, 2.5);
+	gluOrtho2D(1, -1, 1, -1);
+	// glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 	// Switch back to Model view
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	// Look at cube from above
-	gluLookAt(-1.0, 2.0, 0.0, -1.0, 0.0, -2.0, 0, 1, 0);
+	gluLookAt(-1.0, 1.0, 0.0, -1.0, 0.0, -1.0, 0.0, 1.0, 0.0);
 	glViewport(0, 0, giXRes, giYRes);	// Create the viewport
-	glScissor(0, 0, giXRes, giYRes);	// Define scissor area, nothing beyond this will be rendered
-	glEnable(GL_SCISSOR_TEST);			// Enable the scissor test
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	// glScissor(0, 0, giXRes, giYRes);	// Define scissor area, nothing beyond this will be rendered
+	// glEnable(GL_SCISSOR_TEST);			// Enable the scissor test
+	// glClearColor(1.0, 1.0, 1.0, 0.0);
+	// glClear(GL_COLOR_BUFFER_BIT);
 
 	glBegin(GL_POINTS);
 	glColor3f(1.0f, 0.0f, 1.0f);
 	while (pointcount < 8)
 	{
-		glVertex3f(vertexlist[pointcount].x, vertexlist[pointcount].y, vertexlist[pointcount].z);
-		pointcount++;
+		//if (vertexlist[pointcount].x != 0.0)
+		//{
+			std::cout << "Drawing point: ";
+			std::cout << vertexlist[pointcount].x << ", " << vertexlist[pointcount].y << ", " << vertexlist[pointcount].z << std::endl;
+			glVertex3f(vertexlist[pointcount].x, vertexlist[pointcount].y, vertexlist[pointcount].z);
+			pointcount++;
+		//}
 	}
 	glEnd();
 
-	glutSwapBuffers();				// swap the front/back buffers
+	glutSwapBuffers();				// Swap the front/back buffers
 	glutPostRedisplay();			// Force the graphics to be displayed
 }
 
@@ -106,16 +114,14 @@ int main(int argc, char** argv)
 	parseObj();
 
 	glutInit(&argc, argv);
-
-	/* Window 1 */
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); // This defines that we wish to use double duffering
-	glutInitWindowSize(giXRes, giYRes);		// Create a window of a specified size
-	glutInitWindowPosition(50, 50);			// locate the window at the require position
+	// Create a window of a specified size
+	glutInitWindowSize(giXRes, giYRes);
+	glutInitWindowPosition(50, 50);
 	window1ID = glutCreateWindow("OBJ file demo");
-	glutSetIconTitle("Window 1 - Minimized");
-	initGL();			// A function to initialise opengl and glut (will only have effect for first window)
-	glutDisplayFunc(drawObj);	// GLUT requires that you define one function which is used to display the graphics
+	initGL();
+	glutDisplayFunc(drawObj);
+	glutMainLoop();	// Start the GLUT processing loop
 
-	glutMainLoop();	// Start the GLUT processing loop. Only call this once.
 	return 0;
 }
