@@ -1,5 +1,4 @@
-// #include "stdafx.h"
-// This script based on https://www.ntu.edu.sg/home/ehchua/programming/opengl/CG_Examples.html
+// Based on https://www.ntu.edu.sg/home/ehchua/programming/opengl/CG_Examples.html
 
 #include <glut.h>
 #include <iostream>
@@ -81,30 +80,20 @@ void displayWin1() {
 	// Add perspective view
 	glMatrixMode(GL_PROJECTION);	// Switch to projection mode
 	glLoadIdentity();				// Reset the view
-									// gluPerspective(45.0, 1.0, 1.0, 9.5);	// Define the perspective view
-	gluPerspective(45.0, 1.0, 1.0, 10.5);
-	// Note that the far cliping plane is set to 9.5 so that it just clips the rear of the
+	// Define the perspective view
+	// Note that the far cliping plane is set to 10.5 so that it just clips the rear of the
 	// rotating cube, so that you can see the effect of the clipping.
+	gluPerspective(45.0, 1.0, 1.0, 10.5);
 
 	// Switch back to Model view
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	// Look at cube form above
-	// gluLookAt(0.0, 6.0, 0.0, 0.0, 0.0, -7.0, 0, 1, 0);
-
-	// moving the camera and target the same relative distance, creates a pan effect
-	// Enable the line below and comment out the gluLookAt command on the previous line
-	// gluLookAt(xPan, 0.0, 0.0, xPan, 0.0, -7.0, 0, 1, 0);
-
-	// Move zEye
-	// gluLookAt(0.0, 6.0, zEye, 0.0, 0.0, -7.0, 0, 1, 0);
-
 	// Move x and zeye
 	gluLookAt(xPan, 3.0, zEye, xPan, 0.0, -7.0, 0, 1, 0);
 
 
-	// Pan the camera back and forth - works with  LookAt command above when it is un-commented
+	// Pan the camera back and forth - works with LookAt command above when it is un-commented
 	// xPan = xPan + panSpeed;
 	if (xPan >= xPanMax || xPan <= -xPanMax)
 		panSpeed = -panSpeed;
@@ -117,17 +106,16 @@ void displayWin1() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	zRotate = zRotate + rotateSpeed;	// Increase the rotation
+	glTranslatef(0.0f, 0.0f, -7.0f);	// Push evrything back 7 units from camera
 
-	glTranslatef(0.0f, 0.0f, -7.0f);	//Push evrything back 7 units from camera
-
-										// Apply rotatation only to the cube
+	// Apply rotatation only to the cube
 	glPushMatrix();		// Save the current state of the world
-	glRotatef(zRotate, 0.0, 1.0, 0.0);	// apply a rotational effect to the world
+	glRotatef(zRotate, 0.0, 1.0, 0.0);	// Apply a rotational effect to the world
 	drawCube();							// Draw the cube at the new position
 	glPopMatrix();		// Restore the save state, so that only the cube has been rotated
 
-						// Draw a static square in front of the cube, using trinagles
-						// as this is outside the push/pop, the previosu rotate command does not apply to this polygon
+	// Draw a static square in front of the cube, using trinagles
+	// as this is outside the push/pop, the previosu rotate command does not apply to this polygon
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.0f, 1.0f, 1.0f);
 
@@ -141,10 +129,8 @@ void displayWin1() {
 	glVertex3f(1.0f, 1.0f, 1.0f);
 	glEnd();
 
-	glDisable(GL_SCISSOR_TEST);		// switch off scissor test
-
-	glutSwapBuffers();				// swap the front/back buffers
-
+	glDisable(GL_SCISSOR_TEST);		// Switch off scissor test
+	glutSwapBuffers();				// Swap the front/back buffers
 	glutPostRedisplay();			// Force the graphics to be displayed
 }
 
@@ -206,7 +192,7 @@ void displayWin2() {
 		glEnd();
 	}
 
-	// glDisable(GL_SCISSOR_TEST);		// Switch off scissor test
+	// glDisable(GL_SCISSOR_TEST);	// Switch off scissor test
 	glutSwapBuffers();				// Swap the front/back buffers
 	glutPostRedisplay();			// Force the graphics to be displayed
 }
@@ -214,29 +200,35 @@ void displayWin2() {
 void initGL() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST); // Run a depth test to ensure triangles are drawn over each other in the correct order. Comment this line and look at the results.
-	glDepthFunc(GL_LEQUAL);  // Decide the rules for the depth test. If the new pixel has a depth less than or equal to the curent depth value for that pixel (ie the new pixel is closer to the screen) draw the new pixel 
+	// Run a depth test to ensure triangles are drawn over each other in the
+	// correct order
+	glEnable(GL_DEPTH_TEST);
+	// Decide the rules for the depth test
+	// If the new pixel has a depth less than or equal to the curent depth
+	// value for that pixel (ie the new pixel is closer to the screen) draw
+	// the new pixel
+	glDepthFunc(GL_LEQUAL);
 	glMatrixMode(GL_PROJECTION);
 }
 
 void inputCallback(unsigned char key, int x, int y) {
 	switch (key) {
-	case 'w':
-		// zEye--;
-		zEye -= moveSpeed;
-		break;
-	case 's':
-		// zEye++;
-		zEye += moveSpeed;
-		break;
-	case 'a':
-		xPan -= panSpeed;
-		break;
-	case 'd':
-		xPan += panSpeed;
-		break;
-	default:
-		break;
+		case 'w':
+			// zEye--;
+			zEye -= moveSpeed;
+			break;
+		case 's':
+			// zEye++;
+			zEye += moveSpeed;
+			break;
+		case 'a':
+			xPan -= panSpeed;
+			break;
+		case 'd':
+			xPan += panSpeed;
+			break;
+		default:
+			break;
 	}
 	glutPostRedisplay();
 }
@@ -246,17 +238,17 @@ void myMenu(GLint menuEntryID)
 {
 	switch (menuEntryID)
 	{
-	case 1:
-		displayTriangle1 = !displayTriangle1;
-		break;
-	case 2:
-		displayTriangle2 = !displayTriangle2;
-		break;
-	case 3:
-		displaySquare = !displaySquare;
-		break;
-	default:
-		break;
+		case 1:
+			displayTriangle1 = !displayTriangle1;
+			break;
+		case 2:
+			displayTriangle2 = !displayTriangle2;
+			break;
+		case 3:
+			displaySquare = !displaySquare;
+			break;
+		default:
+			break;
 	}
 }
 
@@ -265,27 +257,27 @@ void faceCullingMenu(GLint menuEntryID)
 {
 	switch (menuEntryID)
 	{
-	case 1:
-		triangleCullMode = GL_FRONT;
-		glCullFace(triangleCullMode);
-		// TODO check if it's already enabled before calling this again
-		glEnable(GL_CULL_FACE);
-		break;
-	case 2:
-		triangleCullMode = GL_BACK;
-		glCullFace(triangleCullMode);
-		glEnable(GL_CULL_FACE);
-		break;
-	case 3:
-		triangleCullMode = GL_FRONT_AND_BACK;
-		glCullFace(triangleCullMode);
-		glEnable(GL_CULL_FACE);
-		break;
-	case 4:
-		glDisable(GL_CULL_FACE);
-		break;
-	default:
-		break;
+		case 1:
+			triangleCullMode = GL_FRONT;
+			glCullFace(triangleCullMode);
+			// TODO check if it's already enabled before calling this again
+			glEnable(GL_CULL_FACE);
+			break;
+		case 2:
+			triangleCullMode = GL_BACK;
+			glCullFace(triangleCullMode);
+			glEnable(GL_CULL_FACE);
+			break;
+		case 3:
+			triangleCullMode = GL_FRONT_AND_BACK;
+			glCullFace(triangleCullMode);
+			glEnable(GL_CULL_FACE);
+			break;
+		case 4:
+			glDisable(GL_CULL_FACE);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -299,19 +291,19 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(giXRes, giYRes);		// Create a window of a specified size
 	glutInitWindowPosition(50, 50);			// locate the window at the require position
 	window1ID = glutCreateWindow("Window 1 - Rotating Clipped Cube");
-	glutIconifyWindow();
+	// glutIconifyWindow();
 	glutSetIconTitle("Window 1 - Minimized");
-	initGL();			// A function to initialise opengl and glut (will only have effect for first window)
+	initGL();	// A function to initialise opengl and glut (will only have effect for first window)
 	glutKeyboardFunc(inputCallback);
 	glutDisplayFunc(displayWin1);	// GLUT requires that you define one function which is used to display the graphics
 
-									/* Window 2 */
+	/* Window 2 */
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(giXRes, giYRes);
 	glutInitWindowPosition(250, 250);
 	window2ID = glutCreateWindow("Window 2 - Triangles And Some Menus");
 	// glutIconifyWindow();
-	// glutSetIconTitle("Window 2 - Minimized");
+	glutSetIconTitle("Window 2 - Minimized");
 	glutSetWindow(window2ID);
 	glutDisplayFunc(displayWin2);
 
