@@ -1,7 +1,5 @@
-# opengl-demos
+# OpenGL Demos
 
-OpenGL demos in C++ with SDL and GLUT
+OpenGL demos in C++ with SDL and GLUT.
 
-**Author:** Alpeche Pancha
-
-**Version:** 0.0.2
+This project is no longer in development. The repository is now archived and in read-only mode.
